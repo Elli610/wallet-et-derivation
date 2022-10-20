@@ -1,7 +1,8 @@
+
 use rand::Rng;
 use sha2::Sha512;
 use hmac::{Hmac, Mac};
-use hex_literal::hex;
+//use hex_literal::hex;
 
 fn get_random_bytes() -> [u8; 16] {
     let random_bytes = rand::thread_rng().gen::<[u8; 16]>();
@@ -10,13 +11,14 @@ fn get_random_bytes() -> [u8; 16] {
 }
    
 fn master_private_key(private_key : [u8; 16] ) {
-    let mut master_private = [0u8; 16];
+    let mut _master_private = [0u8; 16];
 
-    // Create alias for HMAC-SHA256
+    // Create alias for HMAC-SHA
     type HmacSha512 = Hmac<Sha512>;
 
-    let mac = HmacSha512::new_from_slice(private_key.to_vec().as_slice()).unwrap();
+    let mac = HmacSha512::new_from_slice(private_key.to_vec().as_slice()).unwrap().finalize().into_bytes();
     println!("mac: {:?}", mac);
+    println!("{:?}", mac[0])
     
 }
 
@@ -27,4 +29,5 @@ fn main() {
     //println!("Master private key: {:?}", master_private_key(a));
 
 }
+
 
