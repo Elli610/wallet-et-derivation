@@ -19,7 +19,7 @@ fn join_int(vect : Vec<u8>) -> String {
     return out;
 }
 
-fn master_key(private_key : [u8; 16] ) -> (String,String) {
+fn master_key(private_key : [u8; 16] ) -> (Vec<u8>,Vec<u8>) {
     /* 
     * extract the master private key and the master chaincode from the private key
     */
@@ -35,27 +35,36 @@ fn master_key(private_key : [u8; 16] ) -> (String,String) {
     // master_chaincode
     let master_chaincode = mac[32..].to_vec();
     
-    
+    /*
     println!("mac: {:?}", mac);
     println!("Master private key: {:?}", master_private_key);
     println!("Master chain code: {:?}", master_chaincode);
-    
+    */
 
-    (join_int(master_private_key),join_int(master_chaincode))
+    (master_private_key,master_chaincode)
 
 
 }
 
+fn master_public_key(master_private_key : Vec<u8>) -> Vec<u8> {
+    /*
+    *  This function returns the master public key
+    */
+    type HmacSha512 = Hmac<Sha512>;
+    let master_private_key = HmacSha512::new_from_slice(master_private_key.to_vec().as_slice()).unwrap().finalize().into_bytes();
 
+    return Vec::from_iter(master_private_key.to_vec()[0..32].iter().cloned());
+    
+    
+}
 
 
 
 fn main() {
     let a = get_random_bytes();
-    println!("Random bytes: {:?}", a);
+    //println!("Random bytes: {:?}", a);
     //(master_priv,master_chaincode) = master_private_key(a);
-    println!("Master private key: {:?}", master_key(a).0);
-
+    println!("Master private key: {:?}", join_int(master_key(a).0));
+    println!("Master public key: {:?}", join_int(master_public_key(master_key(a).0)));
 }
-
 
