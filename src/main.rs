@@ -19,6 +19,13 @@ fn join_int(vect : Vec<u8>) -> String {
     return out;
 }
 
+fn join_hex(vect : Vec<String>) -> String {
+    /* concatenate the elements of vect to build one String */
+    let out = vect.iter().map(|x| x.to_string()).collect::<Vec<String>>().join("");
+    return out;
+    
+}
+
 fn master_key(private_key : [u8; 16] ) -> (Vec<u8>,Vec<u8>) {
     /* 
     * extract the master private key and the master chaincode from the private key
@@ -64,7 +71,12 @@ fn main() {
     let a = get_random_bytes();
     //println!("Random bytes: {:?}", a);
     //(master_priv,master_chaincode) = master_private_key(a);
+
+    let master_public = master_public_key(master_key(a).0);
+    let hex_string = hex::encode(join_int(master_public));
+
     println!("Master private key: {:?}", join_int(master_key(a).0));
-    println!("Master public key: {:?}", join_int(master_public_key(master_key(a).0)));
+    //println!("Master public key: {:x?}", master_public);
+    println!("{:X?}",hex_string); 
 }
 
