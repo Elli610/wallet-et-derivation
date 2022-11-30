@@ -47,10 +47,7 @@ fn master_key(private_key : [u8; 16] ) -> (Vec<u8>,Vec<u8>) {
     println!("Master private key: {:?}", master_private_key);
     println!("Master chain code: {:?}", master_chaincode);
     */
-
     (master_private_key,master_chaincode)
-
-
 }
 
 fn master_public_key(master_private_key : Vec<u8>) -> Vec<u8> {
@@ -72,11 +69,10 @@ fn main() {
     //println!("Random bytes: {:?}", a);
     //(master_priv,master_chaincode) = master_private_key(a);
 
-    let master_public = master_public_key(master_key(a).0);
-    let hex_string = hex::encode(join_int(master_public));
+
 
     println!("Master private key: {:?}", join_int(master_key(a).0));
-    //println!("Master public key: {:x?}", master_public);
-    println!("{:X?}",hex_string); 
+    println!("Master public key: {:x?}", "04".to_owned() + &join_int(master_public_key(master_key(a).0)));
+
 }
 
