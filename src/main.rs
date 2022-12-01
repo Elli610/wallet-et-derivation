@@ -78,7 +78,7 @@ fn hash_sha256(data: String) -> String {
     return format!("{:X}", result);   
 }
 
-fn merkle_Tree(data : Vec<String>) -> String {
+fn merkle_tree(data : Vec<String>) -> String {
     /*
     Return the merkle root of the tree
      */
@@ -106,10 +106,9 @@ fn merkle_Tree(data : Vec<String>) -> String {
         }
         merkle_tree = new_merkle_tree;
     }
-
     return merkle_tree[0].to_string();
-
 }
+
 
 
 fn main() {
@@ -128,6 +127,6 @@ fn main() {
     for i in master_key(a).0 {
         data.push(i.to_string());
     }
-    println!("merkle : {:?}",merkle_Tree(data));
+    println!("merkle : {:?}",merkle_tree(data));
     //hash_sha256("hello".to_string());
 }
