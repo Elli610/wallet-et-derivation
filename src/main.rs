@@ -1,6 +1,6 @@
 
 use rand::Rng;
-use sha2::Sha512;
+use sha2::{Sha256, Sha512, Digest};
 use hmac::{Hmac, Mac};
 
 
@@ -62,6 +62,54 @@ fn master_public_key(master_private_key : Vec<u8>) -> Vec<u8> {
     
 }
 
+fn hash_sha256(data: String) -> String {
+    
+    let mut hasher = Sha256::new();
+
+
+    hasher.update(data.as_bytes());
+
+    
+    let result = hasher.finalize();
+
+    //println!("data: {:?}", data);
+    //println!("Hash: {:?}", result);
+
+    return format!("{:X}", result);   
+}
+
+fn merkleTree(data : Vec<String>) -> String {
+    /*
+    Return the merkle root of the tree
+     */
+    let mut merkle_tree = data.to_vec();
+    let root = "0".to_string();
+
+   //hash all the data of the initial vector
+   for i in 0..data.len() {
+       let hash = hash_sha256(merkle_tree[i].to_string());
+       merkle_tree[i] = hash;
+    }
+    
+    // build the merkle tree
+    while merkle_tree.len() > 1 {
+        let mut new_merkle_tree = Vec::new();
+        let mut i = 0;
+        while i < merkle_tree.len() {
+            if i == merkle_tree.len() - 1 {
+                new_merkle_tree.push(merkle_tree[i].to_string());
+            } else {
+                let hash = hash_sha256(merkle_tree[i].to_string() + merkle_tree[i + 1].to_string().as_str());
+                new_merkle_tree.push(hash);
+            }
+            i += 2;
+        }
+        merkle_tree = new_merkle_tree;
+    }
+
+    return merkle_tree[0].to_string();
+
+}
 
 
 fn main() {
@@ -74,5 +122,11 @@ fn main() {
     println!("Master private key: {:?}", join_int(master_key(a).0));
     println!("Master public key: {:x?}", "04".to_owned() + &join_int(master_public_key(master_key(a).0)));
 
+    let mut data = Vec::new();
+    for i in master_key(a).0 {
+        data.push(i.to_string());
+    }
+    println!("merkle : {:?}",merkleTree(data));
+    //hash_sha256("hello".to_string());
 }
 
